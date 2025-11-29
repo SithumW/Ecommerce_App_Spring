@@ -1,11 +1,11 @@
-package com.app.ecom;
+package com.app.ecom.controller;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.app.ecom.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.app.ecom.service.userService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
