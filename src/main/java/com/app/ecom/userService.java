@@ -1,5 +1,6 @@
 package com.app.ecom;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,26 +9,42 @@ import java.util.Optional;
 
 
 @Service //Service annotation, allows to inject to others
+@RequiredArgsConstructor
 public class userService {
 
+    private final UserRepository userRepository; //Create an instance of user Repository
+    //public List<User> userList = new ArrayList<>();
     private int userID = 1; //Increments based on the number of users
 
-    public List<User> userList = new ArrayList<>();
-
+    /* This is not needed (@RequiredArgsConstructor)
+    public userService(UserRepository userRepository) { //Automatically inject userRepository when object created
+        this.userRepository = userRepository;
+    }
+*/
 
     public List<User> fetchAllUsers(){
-        return userList;
+
+        //return userList;
+        return userRepository.findAll(); //use Repository operations (return all the users)
     }
 
-    public List<User> addUser(User user){
+    public String addUser(User user){
+
+        userRepository.save(user);
+        return "User created successfully";
+
+        /*
         user.setId((long) userID);
         userID ++;
+
 
         //Or we can use post increment
         //user.setId((long) userID++);
 
         userList.add(user);
         return userList;
+           */
+
     }
 
 
@@ -35,7 +52,11 @@ public class userService {
 
     public Optional<User> getOneUser(Long id){
 
+        return userRepository.findById(id);
 
+
+
+/*
         return userList.stream() //convert userlist into a stream
                 .filter(user -> user.getId().equals(id)) //for every user, check userId == id
                 .findFirst(); //Get the first
@@ -53,13 +74,30 @@ public class userService {
         return null;
 */
 
+
+
+
+
     }
 
 
-    public Optional<User> updateUser(Long id, User userIn){
+    public boolean updateUser(Long id, User userIn){
             //get the id, userUpdated
 
-        int idInt = Math.toIntExact(id);
+
+        return userRepository.findById(id) //returns an optional
+                .map(existinguser -> { //use map to update
+                    existinguser.setFirstName(userIn.getFirstName());
+                    existinguser.setLastName(userIn.getLastName());
+                    existinguser.setAddress(userIn.getAddress());
+                    existinguser.setEmail(userIn.getEmail());
+                    existinguser.setPhone(userIn.getPhone());
+                    userRepository.save(existinguser);
+                    return true;
+                        }).orElse(false);
+
+
+       /* int idInt = Math.toIntExact(id);
 
 
         //find user
@@ -77,7 +115,7 @@ public class userService {
         return user; //returns user (Optional type)
 
 
-        /*
+
             //Use the following to update each one
             return userList.stream()
             .filter(user -> user.getId().equals(id))
@@ -89,6 +127,8 @@ public class userService {
             })orElse(false);
 
           */
+
+
 
     }
 }

@@ -50,12 +50,24 @@ public class UserController {
 
     //Update user
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id , @RequestBody User user){
+    public ResponseEntity<String> updateUser(@PathVariable Long id , @RequestBody User user) {
 
+
+        boolean res = userService.updateUser(id, user);
+        if (res) {
+            return ResponseEntity.ok("User updated successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+            //error occurred;
+        }
+        /*
         return userService.updateUser(id, user)
                 .map(u -> ResponseEntity.ok("User Updated Successfully"))
                 .orElseGet(() -> ResponseEntity.notFound().build());
+        */
+
         //if you are using second method
+
         /*
 
         boolean updated = userService.updateUser(id, user);
@@ -67,6 +79,7 @@ public class UserController {
         }
 
         */
+
     }
 
 

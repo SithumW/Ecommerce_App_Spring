@@ -1,16 +1,13 @@
 package com.app.ecom;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data //Getters and Setters (Need to access the data)
-@Entity    // (name = "user_table") // Mark as a JPA entity
+@Entity (name = "user_table")   // (name = "user_table") // Mark as a JPA entity (User keyword is reserved in SQL)
 //table name -> user_table, if not mentioned, the class name will be table name
 @NoArgsConstructor
 //@AllArgsConstructor // will not need for now
@@ -24,6 +21,7 @@ public class User {
     private String email;
     private String phone;
     private Address address;
+    private UserRole role = UserRole.CUSTOMER; //enum (Default = CUSTOMER)
 
 
     /*
