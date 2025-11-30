@@ -1,4 +1,6 @@
 package com.app.ecom.controller;
+import com.app.ecom.dto.UserRequest;
+import com.app.ecom.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import com.app.ecom.model.User;
 import org.springframework.http.HttpStatus;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.app.ecom.service.userService;
 
 import java.util.List;
+import java.util.ResourceBundle;
 
 
 //@RequiredArgsConstructor eliminates the need for separate constructor to instantiate userService.
@@ -31,7 +34,8 @@ public class UserController {
 
     @GetMapping
    //@RequestMapping(value = "api/users", method = RequestMethod.GET)
-    public ResponseEntity<List<User>> getAllUsers(){
+    public ResponseEntity<List<UserResponse>> getAllUsers(){
+    //UserResponse will be returned
 
         return new ResponseEntity<>(userService.fetchAllUsers(),HttpStatus.OK);
         //return ResponseEntity.ok(userService.fetchAllUsers());
@@ -41,19 +45,28 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody User user){
-        System.out.println(user);
-        userService.addUser(user);
+    public ResponseEntity<String> createUser(@RequestBody UserRequest userRequest){
+        //Request is not User type
+        //Its now on, UserRequest
 
-        return ResponseEntity.ok("User Added Successfully!");
+
+        if (userService.addUser(userRequest)){
+
+            return ResponseEntity.ok("User Added Successfully!");
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
+
+
     }
 
     //Update user
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id , @RequestBody User user) {
+    public ResponseEntity<String> updateUser(@PathVariable Long id , @RequestBody UserRequest UpdateduserRequest) {
 
 
-        boolean res = userService.updateUser(id, user);
+        boolean res = userService.updateUser(id, UpdateduserRequest);
         if (res) {
             return ResponseEntity.ok("User updated successfully");
         } else {
@@ -84,7 +97,7 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id){ //taking id query parameter
+    public ResponseEntity<UserResponse> getUser(@PathVariable Long id){ //taking id query parameter
     /*
         User user =  userService.getOneUser(id);
         if (user == null){
