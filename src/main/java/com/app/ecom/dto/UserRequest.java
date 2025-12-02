@@ -12,5 +12,6 @@ public class UserRequest {
     private String email;
     private String phone;
 //    private UserRole role; Role is no needed (Auto assigns)
+
     private AddressDTO address;
 }

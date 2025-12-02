@@ -22,8 +22,6 @@ import java.util.stream.Collectors;
 public class userService {
 
     private final UserRepository userRepository; //Create an instance of user Repository
-    //public List<User> userList = new ArrayList<>();
-    private int userID = 1; //Increments based on the number of users
 
     /* This is not needed (@RequiredArgsConstructor)
     public userService(UserRepository userRepository) { //Automatically inject userRepository when object created
@@ -34,36 +32,55 @@ public class userService {
     public List<UserResponse> fetchAllUsers(){
     //Returns UserResponse
 
-        //return userRepository.findAll(); //use Repository operations (return all the users)
-        //This will return List of User
-        //But we want a list of UserResponse
-        //We can define a separate method for that
-
-        /*
-        List<User> users = userRepository.findAll(); //get all the Users to a List
-
-        List<UserResponse>  responseList = new ArrayList<>();
-
-        for (User u : users){
-            responseList.add(mapToUserResponse(u));
-
-        }
-
-        return responseList;
-        */
-
-
-        //Do it using single line:
-
         return userRepository.findAll().stream() //convert to stream
                 .map(this::mapToUserResponse)//for each User comes from userRepository(), apply the function mapToUserResponse()
                 .collect(Collectors.toList());//Convert to a List again
 
+    }
 
 
+    public boolean addUser(UserRequest userRequest){
+
+        try {
+            User user = new User();
+            updateUserFromRequest(user, userRequest);
+            userRepository.save(user);
+            return true;
+
+        }
+        catch (Exception  e){
+            log.error("e: ", e);
+            return false;
+
+        }
 
 
     }
+
+
+
+    public Optional<UserResponse> getOneUser(Long id){
+
+        return userRepository.findById(id)
+                .map(this::mapToUserResponse);
+
+    }
+
+
+
+    public boolean updateUser(Long id, UserRequest UpdateduserRequest){
+            //get the id, userUpdated
+
+        return userRepository.findById(id) //returns an optional
+                .map(existinguser -> {
+                    updateUserFromRequest(existinguser,UpdateduserRequest);
+                    userRepository.save(existinguser);
+                    return true;
+                        }).orElse(false);
+
+    }
+
+
 
     //Convert User => UserResponse
     private UserResponse mapToUserResponse(User user){
@@ -92,121 +109,6 @@ public class userService {
 
         return response;
     }
-
-
-
-
-
-    public boolean addUser(UserRequest userRequest){
-
-        try {
-            User user = new User();
-            updateUserFromRequest(user, userRequest);
-            userRepository.save(user);
-            return true;
-
-        }
-        catch (Exception  e){
-            log.error("e: ", e);
-            return false;
-
-        }
-
-        /*
-        user.setId((long) userID);
-        userID ++;
-
-
-        //Or we can use post increment
-        //user.setId((long) userID++);
-
-        userList.add(user);
-        return userList;
-           */
-
-    }
-
-
-
-    public Optional<UserResponse> getOneUser(Long id){
-
-        return userRepository.findById(id)
-                .map(this::mapToUserResponse);
-
-
-
-/*
-        return userList.stream() //convert userlist into a stream
-                .filter(user -> user.getId().equals(id)) //for every user, check userId == id
-                .findFirst(); //Get the first
-                //This will return an optional
-
-        /*
-        //filter out one user
-        for (int a = 1; a < userList.size(); a ++){
-            User user = userList.get(a);
-            if (Objects.equals(user.getId(), id)){
-                return user;
-            }
-
-        }
-        return null;
-*/
-
-
-
-
-
-    }
-
-
-    public boolean updateUser(Long id, UserRequest UpdateduserRequest){
-            //get the id, userUpdated
-
-
-        return userRepository.findById(id) //returns an optional
-                .map(existinguser -> {
-                    updateUserFromRequest(existinguser,UpdateduserRequest);
-                    userRepository.save(existinguser);
-                    return true;
-                        }).orElse(false);
-
-
-       /* int idInt = Math.toIntExact(id);
-
-
-        //find user
-        Optional<User> user =  userList.stream()
-                .filter(user1 -> id.equals(user1.getId()))
-                .findFirst(); //find the user
-
-        user.ifPresent(foundUser->{ //if user present
-            int index = userList.indexOf(foundUser); //find its index
-            userList.set(index,userIn); //update
-
-        });
-
-        System.out.println(user);
-        return user; //returns user (Optional type)
-
-
-
-            //Use the following to update each one
-            return userList.stream()
-            .filter(user -> user.getId().equals(id))
-            .findFirst()
-            .map(existingUser -> {
-            existingUser.setFirstName(updatedUser.getFirstName());
-            existingUser.setLastName(updatedUser.getLastName());
-            return true;
-            })orElse(false);
-
-          */
-
-
-
-    }
-
 
     //UserRequest => User
     //Instead of using mapToUserRequest, this way help to update

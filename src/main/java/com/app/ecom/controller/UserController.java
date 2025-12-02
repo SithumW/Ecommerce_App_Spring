@@ -2,14 +2,13 @@ package com.app.ecom.controller;
 import com.app.ecom.dto.UserRequest;
 import com.app.ecom.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
-import com.app.ecom.model.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.app.ecom.service.userService;
 
 import java.util.List;
-import java.util.ResourceBundle;
+
 
 
 //@RequiredArgsConstructor eliminates the need for separate constructor to instantiate userService.
@@ -73,40 +72,13 @@ public class UserController {
             return ResponseEntity.notFound().build();
             //error occurred;
         }
-        /*
-        return userService.updateUser(id, user)
-                .map(u -> ResponseEntity.ok("User Updated Successfully"))
-                .orElseGet(() -> ResponseEntity.notFound().build());
-        */
 
-        //if you are using second method
-
-        /*
-
-        boolean updated = userService.updateUser(id, user);
-        if (updated){
-        return ResponseEntity.ok("User Added Successfully")
-        }
-        else{
-        return ResponseEntity.notFound().build();
-        }
-
-        */
 
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUser(@PathVariable Long id){ //taking id query parameter
-    /*
-        User user =  userService.getOneUser(id);
-        if (user == null){
-
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(user);
-
-     */
 
         //Handle the optional
         return userService.getOneUser(id)
