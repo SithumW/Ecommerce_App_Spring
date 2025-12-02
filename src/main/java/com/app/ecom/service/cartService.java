@@ -118,7 +118,13 @@ public class cartService {
 
 
 
+        /*
+        Without using a CartResponse : Directly the cart will be returned.
 
+        return userRepository.findById(Long.valueOf(userId))
+        .map(cartItemRepository::findByUser)
+        .orElseGet(List::of); // else return an empty list
+        * */
     }
 
 
@@ -134,5 +140,15 @@ public class cartService {
         productResponse.setActive(product.getActive());
 
         return productResponse;
+    }
+
+    public void clearCart(String userId) { //delete cart items of particular user
+        userRepository.findById(Long.valueOf(userId)).ifPresent(
+                cartItemRepository::deleteByUser
+                );
+    }
+
+    public List<CartItem> getCart(String userId) {
+        return cartItemRepository.findById(Long.valueOf(userId)).stream().toList();
     }
 }
